@@ -21,3 +21,11 @@ tests/
 coverage/
 dist/
 outputs/
+
+# Python生成物
+__pycache__/
+*.py[cod]
+
+# mail_receiver のテストコードは管理する
+!mail_receiver/tests/
+!mail_receiver/tests/*.py
