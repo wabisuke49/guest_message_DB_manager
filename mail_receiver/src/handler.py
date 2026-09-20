@@ -1,15 +1,22 @@
-"""SMTP DATA handler with no persistence or message parsing responsibilities."""
+"""SMTP DATA handler that saves received messages as raw .eml files."""
+
+from pathlib import Path
+from uuid import uuid4
+
+
+EML_DIRECTORY = Path(__file__).resolve().parent.parent / "data" / "eml"
 
 class SMTPReceiveHandler:
-    """Accept SMTP messages and pass their unparsed bytes to an optional callback."""
+    """Accept SMTP messages and save their unparsed bytes."""
 
     async def handle_DATA(self, _server: object, _session: object, envelope: object) -> str:
-        """Receive an SMTP envelope and acknowledge it without storing its contents."""
-        mail_from = str(envelope.mail_from)
-        rcpt_tos = list(envelope.rcpt_tos)
+        """Save an SMTP envelope as an .eml file before acknowledging receipt."""
         content = bytes(envelope.content)
-        print(f"Received message from: {mail_from}")
-        print(f"Recipients: {rcpt_tos}")
-        print(f"Message : {content}")
+
+        try:
+            EML_DIRECTORY.mkdir(parents=True, exist_ok=True)
+            (EML_DIRECTORY / f"{uuid4()}.eml").write_bytes(content)
+        except OSError:
+            return "451 Requested action aborted: local error in processing"
 
         return "250 Message accepted for delivery"
