@@ -54,6 +54,3 @@ def get_house_id(body: str) -> str | None:
             query = urlparse(line.removeprefix("詳細を見る:").strip()).query
             params = parse_qs(query)
             return params.get("houseId", [""])[0]
-
-
-
