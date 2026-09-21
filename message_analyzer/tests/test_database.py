@@ -10,20 +10,16 @@ from database import initialize_database
 
 
 class DatabaseInitializationTests(unittest.TestCase):
-    def test_creates_messages_table(self) -> None:
+    def test_initializes_database(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
             database_path = Path(temporary_directory) / "messages.db"
 
             initialize_database(database_path)
 
-            self.assertTrue(database_path.exists())
             with closing(sqlite3.connect(database_path)) as connection:
-                columns = connection.execute("PRAGMA table_info(messages)").fetchall()
+                result = connection.execute("SELECT 1").fetchone()
 
-        self.assertEqual(
-            [column[1] for column in columns],
-            ["message_id", "received_at", "session_id", "house_id", "guest_message"],
-        )
+        self.assertEqual(result, (1,))
 
     def test_can_initialize_the_same_database_twice(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:

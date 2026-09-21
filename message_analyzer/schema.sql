@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS messages (
-    message_id TEXT PRIMARY KEY,
+    message_id TEXT PRIMARY KEY NOT NULL,
     received_at TEXT NOT NULL,
     session_id TEXT NOT NULL,
     house_id TEXT NOT NULL,
-    guest_message TEXT NOT NULL CHECK (length(trim(guest_message)) > 0)
+    guest_message TEXT NOT NULL
 );

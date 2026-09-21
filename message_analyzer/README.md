@@ -24,7 +24,15 @@ curl http://127.0.0.1:8000/health
 {"status":"ok"}
 ```
 
-起動時に `data/messages.db` を作成し、`schema.sql` の初期スキーマを自動適用します。
+## DB初期化
+
+初回のみ、サーバーを起動する前に次のコマンドで `data/messages.db` を作成し、
+`schema.sql` の初期スキーマを適用します。
+
+```bash
+cd message_analyzer
+python -c "from database import initialize_database; initialize_database()"
+```
 
 ## DBスキーマの変更
 

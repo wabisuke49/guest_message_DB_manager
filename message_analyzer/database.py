@@ -13,7 +13,11 @@ SCHEMA_PATH = SERVICE_DIRECTORY / "schema.sql"
 def initialize_database(database_path: Path = DATABASE_PATH) -> None:
     """Create the SQLite database and apply the initial schema."""
     database_path.parent.mkdir(parents=True, exist_ok=True)
-    schema = SCHEMA_PATH.read_text(encoding="utf-8")
+    conn = sqlite3.connect(database_path)
+    cur = conn.cursor()
 
-    with closing(sqlite3.connect(database_path)) as connection:
-        connection.executescript(schema)
+    schema = SCHEMA_PATH.read_text(encoding="utf-8")
+    cur.execute(schema)
+
+    conn.commit()
+    conn.close()
