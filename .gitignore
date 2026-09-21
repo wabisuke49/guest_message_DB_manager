@@ -25,7 +25,12 @@ outputs/
 # Python生成物
 __pycache__/
 *.py[cod]
+.venv/
 
 # mail_receiver のテストコードは管理する
 !mail_receiver/tests/
 !mail_receiver/tests/*.py
+
+# message_analyzer のテストコードは管理する
+!message_analyzer/tests/
+!message_analyzer/tests/*.py
