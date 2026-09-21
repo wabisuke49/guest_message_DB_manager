@@ -4,8 +4,8 @@ from urllib.parse import parse_qs, urlparse
 
 def extract_message_data(
     body: str, message_id: str, received_at: str
-) -> dict[str, str | None]:
-    """Return MVP message data with ``None`` for fields that are not extracted."""
+) -> dict[str, str] | None:
+    """Return MVP message data, or ``None`` when required fields are missing."""
     guest_message = get_guestmessage(body)
     session_id = get_session_id(body)
     house_id = get_house_id(body)
