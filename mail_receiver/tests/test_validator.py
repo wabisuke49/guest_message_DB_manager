@@ -17,4 +17,25 @@ class ValidateMessageDataTests(unittest.TestCase):
 
     def test_returns_message_when_all_fields_are_valid(self) -> None:
         self.assertEqual(validate_message_data(self.message), self.message)
-    
+
+    def test_returns_none_when_session_id_is_not_uuid(self) -> None:
+        self.message["session_id"] = "not-a-uuid"
+        self.assertIsNone(validate_message_data(self.message))
+
+    def test_returns_none_when_house_id_is_not_uuid(self) -> None:
+        self.message["house_id"] = "not-a-uuid"
+        self.assertIsNone(validate_message_data(self.message))
+
+    def test_returns_none_when_message_id_is_not_uuid(self) -> None:
+        self.message["message_id"] = "not-a-uuid"
+        self.assertIsNone(validate_message_data(self.message))
+
+    def test_returns_none_when_received_at_is_not_utc_datetime(self) -> None:
+        self.message["received_at"] = "2026-09-21 00:00:00"
+
+        self.assertIsNone(validate_message_data(self.message))
+
+    def test_returns_none_when_received_at_uses_jst(self) -> None:
+        self.message["received_at"] = "2026-09-21T09:00:00+09:00"
+
+        self.assertIsNone(validate_message_data(self.message))
