@@ -26,6 +26,7 @@ outputs/
 __pycache__/
 *.py[cod]
 .venv/
+message_analyzer/data/*.db
 
 # mail_receiver のテストコードは管理する
 !mail_receiver/tests/
