@@ -66,5 +66,5 @@ def save_message(message: MessageRequest, database_path: Path | None = None) -> 
             ),
         )
         connection.commit()
-        
+
     return True
