@@ -36,4 +36,3 @@ class MessageRequest(BaseModel):
             raise ValueError("guest_message must not be blank")
 
         return value
-
