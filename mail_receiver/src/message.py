@@ -1,22 +1,52 @@
-"""Extract the MVP message data from a decoded AirHost email body."""
+"""Build MVP message data from saved AirHost EML files."""
 
+from datetime import datetime, timezone
+from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
-def extract_message_data(
-    body: str, message_id: str, received_at: str
-) -> dict[str, str | None]:
-    """Return MVP message data with ``None`` for fields that are not extracted."""
+from .body import extract_plain_text_body
+
+
+def get_message_data(eml_path: Path) -> dict[str, str | None]:
+    """Return MVP message data extracted from one saved EML file."""
+    body = extract_plain_text_body(eml_path.read_bytes())
+    message_data = {
+        "message_id": get_message_id(eml_path),
+        "received_at": get_received_at(eml_path),
+    }
+
+    if body is None:
+        return message_data | {
+            "session_id": None,
+            "house_id": None,
+            "guest_message": None,
+        }
+
+    return message_data | extract_message_data(body)
+
+
+def extract_message_data(body: str) -> dict[str, str | None]:
+    """Return message fields extracted from a decoded email body."""
     guest_message = get_guestmessage(body)
     session_id = get_session_id(body)
     house_id = get_house_id(body)
 
     return {
-        "message_id": message_id,
-        "received_at": received_at,
         "session_id": session_id,
         "house_id": house_id,
         "guest_message": guest_message,
     }
+
+
+def get_message_id(eml_path: Path) -> str:
+    """Return the UUID filename of a saved EML as its message ID."""
+    return eml_path.stem
+
+
+def get_received_at(eml_path: Path) -> str:
+    """Return the saved EML file's modified time as a UTC timestamp."""
+    modified_at = datetime.fromtimestamp(eml_path.stat().st_mtime, timezone.utc)
+    return modified_at.isoformat().replace("+00:00", "Z")
 
 
 def get_guestmessage(body: str) -> str | None:
